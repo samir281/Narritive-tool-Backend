@@ -1,0 +1,6 @@
+target/
+data/
+tessdata/
+src/main/resources/static/
+*.log
+.env

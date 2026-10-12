@@ -1,0 +1,24 @@
+# Render Blueprint: one free Docker web service. Deploy with
+# https://render.com/deploy?repo=https://github.com/samir281/Narritive-tool-Backend
+services:
+  - type: web
+    name: narrative-news-api
+    runtime: docker
+    plan: free
+    region: singapore                 # closest Render region to the Supabase database (Mumbai)
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        value: jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require
+      - key: DB_USER
+        value: postgres.vuwjzavtizoxqyuccorj
+      - key: DB_PASSWORD
+        sync: false                   # asked for when you deploy; never stored in git
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_BASE_URL
+        value: https://narrative-tool-news.netlify.app
+      - key: CORS_ORIGINS
+        value: https://narrative-tool-news.netlify.app,http://localhost:5173
+      - key: OCR_ENABLED
+        value: "false"                # OCR needs ~600 MB; the free instance has 512 MB
