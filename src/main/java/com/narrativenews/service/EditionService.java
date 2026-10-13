@@ -180,7 +180,7 @@ public class EditionService {
                 .orElseThrow(() -> DomainException.notFound("PAGE_NOT_FOUND", "Page not found"));
         return texts.findById(p.getId())
                 .map(t -> new PageTextView("READY", parseBlocks(t.getBlocksJson())))
-                .orElseGet(() -> new PageTextView(ocr.available() ? "PENDING" : "UNAVAILABLE", List.of()));
+                .orElseGet(() -> new PageTextView(ocr.available() || props.ocr().external() ? "PENDING" : "UNAVAILABLE", List.of()));
     }
 
     private List<TextBlock> parseBlocks(String blocksJson) {

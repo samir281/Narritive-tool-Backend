@@ -33,7 +33,7 @@ All configuration is environment variables (see `.env.example`). The `Dockerfile
 
 **Render (free):** `render.yaml` is a ready Blueprint — open
 https://render.com/deploy?repo=https://github.com/samir281/Narritive-tool-Backend and enter the database password when asked.
-The free instance has 512 MB RAM and 0.1 CPU, sleeps after 15 idle minutes (the website pings it every 10 minutes to keep it awake), and OCR is switched off there because it needs ~600 MB. On a host with 1 GB+ set `OCR_ENABLED=true` and raise `-Xmx` in `JAVA_OPTS`.
+The free instance has 512 MB RAM and 0.1 CPU, sleeps after 15 idle minutes (the website pings it every 10 minutes to keep it awake), and OCR is switched off there because it needs ~600 MB. Instead `.github/workflows/ocr.yml` reads new pages every 10 minutes on GitHub's free runners and writes the text to the database (needs the repository secret `DB_PASSWORD`; GitHub pauses scheduled workflows after 60 days without commits — re-enable it under Actions). On a host with 1 GB+ set `OCR_ENABLED=true`, `OCR_EXTERNAL=false` and raise `-Xmx` in `JAVA_OPTS`.
 
 **Storage planning:** a scanned 8-page edition is about 15 MB in the database, so a 500 MB free database holds roughly 30 editions. Delete old editions in the admin to free space.
 

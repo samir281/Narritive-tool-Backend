@@ -22,3 +22,5 @@ services:
         value: https://narrative-tool-news.netlify.app,http://localhost:5173
       - key: OCR_ENABLED
         value: "false"                # OCR needs ~600 MB; the free instance has 512 MB
+      - key: OCR_EXTERNAL
+        value: "true"                 # page text is read by .github/workflows/ocr.yml instead

@@ -16,5 +16,6 @@ public record AppProperties(
     public record Jwt(String secret, long adminTtlMinutes, long readerTtlMinutes) {}
     public record Bootstrap(String adminEmail, String adminPassword) {}
     public record Render(int thumbWidth, int smallWidth, int largeWidth, float jpegQuality, int maxPages) {}
-    public record Ocr(boolean enabled, String datapath, String languages) {}
+    /** external: this server does not read text itself, a separate job does (see OcrWorker). */
+    public record Ocr(boolean enabled, String datapath, String languages, boolean external) {}
 }

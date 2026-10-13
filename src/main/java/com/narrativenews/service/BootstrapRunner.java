@@ -10,11 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/** On startup: create the first admin if none exists, and fail editions whose render was interrupted by a restart. */
+/**
+ * On startup: create the first admin if none exists, and fail editions whose render was interrupted by a restart.
+ * Not in the OCR worker, which runs next to the live server and must not touch editions it is rendering.
+ */
 @Component
+@ConditionalOnProperty(name = "app.ocr.worker-run", havingValue = "false", matchIfMissing = true)
 public class BootstrapRunner implements ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(BootstrapRunner.class);
     private final AdminRepository admins;

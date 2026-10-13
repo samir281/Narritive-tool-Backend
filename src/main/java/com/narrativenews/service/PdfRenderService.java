@@ -90,20 +90,22 @@ public class PdfRenderService {
     private void recognizeText(List<UUID> pageIds, List<Rendered> rendered) {
         if (!ocr.available()) return;
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < pageIds.size(); i++) {
-            UUID pageId = pageIds.get(i);
-            if (!pages.existsById(pageId)) continue; // edition deleted or PDF replaced meanwhile
-            String blocks;
-            try {
-                blocks = ocr.readBlocksJson(ImageIO.read(new ByteArrayInputStream(rendered.get(i).large())));
-            } catch (Throwable t) {
-                log.warn("Text recognition failed for page {}", pageId, t);
-                blocks = "[]";
-            }
-            String result = blocks;
-            tx.executeWithoutResult(s -> { if (pages.existsById(pageId)) texts.save(new PageText(pageId, result)); });
-        }
+        for (int i = 0; i < pageIds.size(); i++) recognizePage(pageIds.get(i), rendered.get(i).large());
         log.info("Recognized text of {} pages in {} ms", pageIds.size(), System.currentTimeMillis() - t0);
+    }
+
+    /** Reads one page's text and stores it (an empty result if reading fails). Skips pages deleted meanwhile. */
+    public void recognizePage(UUID pageId, byte[] largeJpeg) {
+        if (!pages.existsById(pageId)) return; // edition deleted or PDF replaced meanwhile
+        String blocks;
+        try {
+            blocks = ocr.readBlocksJson(ImageIO.read(new ByteArrayInputStream(largeJpeg)));
+        } catch (Throwable t) {
+            log.warn("Text recognition failed for page {}", pageId, t);
+            blocks = "[]";
+        }
+        String result = blocks;
+        tx.executeWithoutResult(s -> { if (pages.existsById(pageId)) texts.save(new PageText(pageId, result)); });
     }
 
     private List<Rendered> renderAll(byte[] pdf) throws Exception {

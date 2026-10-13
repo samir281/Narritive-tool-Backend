@@ -51,3 +51,4 @@ app:
     enabled: ${OCR_ENABLED:true}
     datapath: ${TESSDATA_PATH:./tessdata}              # folder with hin.traineddata and eng.traineddata
     languages: hin+eng
+    external: ${OCR_EXTERNAL:false}                    # true when a separate job reads the text (GitHub Actions)
